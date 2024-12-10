@@ -25,11 +25,11 @@ pipeline {
                 echo 'Hello World'
             }
         }
-        // stage('Cloning Git') {
-        //     steps {
-        //         git 'https://github.com/ValentinStupa/diplom_images.git'
-        //     }
-        // }
+        stage('Cloning Git') {
+            steps {
+                git 'https://github.com/ValentinStupa/diplom_images.git'
+            }
+        }
         stage('Building image') {
             steps{
                 script {
