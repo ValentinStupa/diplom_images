@@ -87,8 +87,8 @@ pipeline {
                             // Replace the placeholder ${IMAGE_TAG} in deployment.yaml with the actual image tag
                             echo "${env.pre_build}"
                             echo "${imageTag}"
-                            sh """#!/bin/bash
-                               sed 's|\${env.pre_build}|${imageTag}|' ${manifest}
+                            sh """
+                               sed -i 's|\${env.pre_build}|${imageTag}|' ${manifest}
                                cp -p ${manifest} ${manifest}_copy
                                grep 'image:' ${manifest}
                             """
