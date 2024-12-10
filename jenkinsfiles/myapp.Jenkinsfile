@@ -35,15 +35,15 @@ pipeline {
                 }
             }
         }
-        stage('Deploy Image') {
-            steps {
-                script {
-                    docker.withRegistry('', registryCredential) {
-                        dockerImage.push()
-                    }
-                }
-            }
-        }
+        // stage('Deploy Image') {
+        //     steps {
+        //         script {
+        //             docker.withRegistry('', registryCredential) {
+        //                 dockerImage.push()
+        //             }
+        //         }
+        //     }
+        // }
         stage('Remove Unused docker image') {
             steps {
                 sh "docker rmi $registry:1.0.$BUILD_NUMBER"
@@ -64,10 +64,7 @@ pipeline {
                     PREVIOUS_BUILD_NUMBER = sh(returnStdout: true, script: 'grep "image:" ${manifest}|awk -F \":\" \'{print $3}\'')
                     echo "Output: ${PREVIOUS_BUILD_NUMBER}"
                     env.pre_build = PREVIOUS_BUILD_NUMBER
-
-                }
-                
-                
+                }                           
             }
         }
         stage('Change build number') {
