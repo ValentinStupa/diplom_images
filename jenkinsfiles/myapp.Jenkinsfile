@@ -81,18 +81,22 @@ pipeline {
                         withEnv(["KUBECONFIG=${KUBECONFIG}"]) {
                             // Get the latest image tag from the GIT_COMMIT environment variable
                             def imageTag = "1.0.${BUILD_NUMBER}"
+                            def file = readFile manifest
+                            file = file.replace(env.pre_build, imageTag)
+                            writeFile file: manifest, text: file
                             // Show file in the directory
                             sh "ls -l ${manifest}"
                             
                             // Replace the placeholder ${IMAGE_TAG} in deployment.yaml with the actual image tag
                             echo "${env.pre_build}"
                             echo "${imageTag}"
-                            sh """
-                               sed -i 's|\$"{env.pre_build}"|\$"{imageTag}"|' ${manifest}
-                               cp -p ${manifest} ${manifest}_copy
-                               sed -e 's|${env.pre_build}|${imageTag}|' ${manifest}_copy
-                               grep 'image:' ${manifest}
-                            """
+                            // sh """
+                            //    sed -i 's|\$"{env.pre_build}"|\$"{imageTag}"|' ${manifest}
+                            //    cp -p ${manifest} ${manifest}_copy
+                            //    sed -i 's|${env.pre_build}|${imageTag}|' ${manifest}_copy
+                            //    grep 'image:' ${manifest}
+                            // """
+                            sh "grep 'image:' ${manifest}"
                             
                              
                             // Apply deployment.yaml to the K8s cluster
