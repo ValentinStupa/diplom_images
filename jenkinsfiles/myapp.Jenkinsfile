@@ -64,14 +64,15 @@ pipeline {
                         withEnv(["KUBECONFIG=${KUBECONFIG}"]) {
                             // Get the latest image tag from the GIT_COMMIT environment variable
                             def imageTag = "1.0.${BUILD_NUMBER}"
+                            def manifest = "manifest_files/myapp/nginx_deploy.yml"
 
                             sh "echo 1.0.${BUILD_NUMBER}"
                             
                             // Show file in the directory
-                            sh "ls -l manifest_files/myapp/nginx_deploy.yml"
+                            sh "ls -l ${manifest}"
                             // Replace the placeholder ${IMAGE_TAG} in deployment.yaml with the actual image tag
                             //sh "sed -i 's|\${IMAGE_TAG}|${imageTag}|' manifest_files/myapp/nginx_deploy.yml"
-                            sh "echo ${IMAGE_TAG} -- ${imageTag}"
+                            sh "grep 'image:' ${manifest}"
                             // Apply deployment.yaml to the K8s cluster
                             //sh "kubectl apply -f deployment.yaml"
                             
