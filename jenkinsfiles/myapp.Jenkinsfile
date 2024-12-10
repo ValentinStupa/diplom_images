@@ -8,6 +8,8 @@ pipeline {
         registry = 'valentinstupa/custom-nginx'
         registryCredential = 'dockerhub_access'
         dockerImage = ''
+        //KUBECONFIG = "/var/lib/jenkins/.kube/config" // hardcode -- bad way
+        KUBECONFIG = 'kube_conf' // Добавить конфигурационный файл из папки "./kube" в креди jenkins и в pipeline использовать id
     }
 
     // agent {
@@ -20,12 +22,20 @@ pipeline {
         timestamps()    // Приписывает timestamp к шагам
     }
     stages {
-        stage('Checkout') {
+        stage('Checkout docker repo') {
             steps {
                 checkout scmGit(branches: [[name: 'main']],
                 userRemoteConfigs: [[url: 'https://github.com/ValentinStupa/diplom_images.git']])
             }
         }
+        
+        stage('Checkout K8S repo') {
+            steps {
+                checkout scmGit(branches: [[name: 'main']],
+                userRemoteConfigs: [[url: 'https://github.com/ValentinStupa/diplom_k8s.git']])
+            }
+        }
+
         stage('Building image') {
             steps{
                 script {
