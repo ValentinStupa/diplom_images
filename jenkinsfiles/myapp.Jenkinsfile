@@ -84,7 +84,7 @@ pipeline {
                             sh "ls -l ${manifest}"
                             
                             // Replace the placeholder ${IMAGE_TAG} in deployment.yaml with the actual image tag
-                            sh "echo ${{PREVIOUS_BUILD_NUMBER}}"
+                            sh "echo ${PREVIOUS_BUILD_NUMBER}"
                             sh "echo ${imageTag}"
                             sh "sed -i 's|\${PREVIOUS_BUILD_NUMBER}|\${imageTag}|' ${manifest}"
                             sh "grep 'image:' ${manifest}"
