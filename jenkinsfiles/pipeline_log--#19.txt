@@ -1,0 +1,174 @@
+Started by GitHub push by ValentinStupa
+Obtained jenkinsfiles/myapp.Jenkinsfile from git https://github.com/ValentinStupa/diplom_images
+[Pipeline] Start of Pipeline
+[Pipeline] properties
+[Pipeline] node
+Running on Jenkins in /var/lib/jenkins/workspace/docker_build
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Declarative: Checkout SCM)
+[Pipeline] checkout
+Selected Git installation does not exist. Using Default
+The recommended git tool is: NONE
+No credentials specified
+Cloning the remote Git repository
+Cloning repository https://github.com/ValentinStupa/diplom_images
+ > git init /var/lib/jenkins/workspace/docker_build # timeout=10
+Fetching upstream changes from https://github.com/ValentinStupa/diplom_images
+ > git --version # timeout=10
+ > git --version # 'git version 2.43.5'
+ > git fetch --tags --force --progress -- https://github.com/ValentinStupa/diplom_images +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git config remote.origin.url https://github.com/ValentinStupa/diplom_images # timeout=10
+ > git config --add remote.origin.fetch +refs/heads/*:refs/remotes/origin/* # timeout=10
+Avoid second fetch
+ > git rev-parse refs/remotes/origin/main^{commit} # timeout=10
+Checking out Revision 62339d19853806504140ad80b91800536c639730 (refs/remotes/origin/main)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 62339d19853806504140ad80b91800536c639730 # timeout=10
+Commit message: "update pipeline"
+ > git rev-list --no-walk bd8af706cb6c946ab4fe5287fd5f22158a4fa2a6 # timeout=10
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] timestamps
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Checkout docker repo)
+[Pipeline] checkout
+[2024-12-10T09:17:05.981Z] Selected Git installation does not exist. Using Default
+[2024-12-10T09:17:05.981Z] The recommended git tool is: NONE
+[2024-12-10T09:17:05.981Z] No credentials specified
+[2024-12-10T09:17:05.982Z]  > git rev-parse --resolve-git-dir /var/lib/jenkins/workspace/docker_build/.git # timeout=10
+[2024-12-10T09:17:05.990Z] Fetching changes from the remote Git repository
+[2024-12-10T09:17:05.995Z]  > git config remote.origin.url https://github.com/ValentinStupa/diplom_images.git # timeout=10
+[2024-12-10T09:17:06.001Z] Fetching upstream changes from https://github.com/ValentinStupa/diplom_images.git
+[2024-12-10T09:17:06.002Z]  > git --version # timeout=10
+[2024-12-10T09:17:06.007Z]  > git --version # 'git version 2.43.5'
+[2024-12-10T09:17:06.007Z]  > git fetch --tags --force --progress -- https://github.com/ValentinStupa/diplom_images.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+[2024-12-10T09:17:06.461Z]  > git rev-parse origin/main^{commit} # timeout=10
+[2024-12-10T09:17:06.469Z] Checking out Revision 62339d19853806504140ad80b91800536c639730 (origin/main)
+[2024-12-10T09:17:06.469Z]  > git config core.sparsecheckout # timeout=10
+[2024-12-10T09:17:06.476Z]  > git checkout -f 62339d19853806504140ad80b91800536c639730 # timeout=10
+[2024-12-10T09:17:06.485Z] Commit message: "update pipeline"
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Building image)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] isUnix
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] sh
+[2024-12-10T09:17:07.692Z] + docker build -t valentinstupa/custom-nginx:1.0.19 .
+[2024-12-10T09:17:08.244Z] #0 building with "default" instance using docker driver
+[2024-12-10T09:17:08.244Z] 
+[2024-12-10T09:17:08.244Z] #1 [internal] load build definition from Dockerfile
+[2024-12-10T09:17:08.244Z] #1 transferring dockerfile: 156B done
+[2024-12-10T09:17:08.244Z] #1 DONE 0.0s
+[2024-12-10T09:17:08.244Z] 
+[2024-12-10T09:17:08.244Z] #2 [internal] load metadata for docker.io/library/nginx:1.21.1
+[2024-12-10T09:17:09.589Z] #2 DONE 1.1s
+[2024-12-10T09:17:09.589Z] 
+[2024-12-10T09:17:09.589Z] #3 [internal] load .dockerignore
+[2024-12-10T09:17:09.589Z] #3 transferring context: 2B 0.1s done
+[2024-12-10T09:17:09.589Z] #3 DONE 0.1s
+[2024-12-10T09:17:09.589Z] 
+[2024-12-10T09:17:09.589Z] #4 [1/2] FROM docker.io/library/nginx:1.21.1@sha256:a05b0cdd4fc1be3b224ba9662ebdf98fe44c09c0c9215b45f84344c12867002e
+[2024-12-10T09:17:09.589Z] #4 DONE 0.0s
+[2024-12-10T09:17:09.589Z] 
+[2024-12-10T09:17:09.589Z] #5 [internal] load build context
+[2024-12-10T09:17:09.589Z] #5 transferring context: 184B done
+[2024-12-10T09:17:09.589Z] #5 DONE 0.0s
+[2024-12-10T09:17:09.589Z] 
+[2024-12-10T09:17:09.589Z] #6 [2/2] COPY index.html /usr/share/nginx/html/index.html
+[2024-12-10T09:17:09.589Z] #6 CACHED
+[2024-12-10T09:17:09.589Z] 
+[2024-12-10T09:17:09.589Z] #7 exporting to image
+[2024-12-10T09:17:09.589Z] #7 exporting layers done
+[2024-12-10T09:17:09.589Z] #7 writing image sha256:4f8ab3ca943f79fbc4c33800a894b882dffff7e4d9b1ab66bd875fc7265b3fa5 done
+[2024-12-10T09:17:09.589Z] #7 naming to docker.io/valentinstupa/custom-nginx:1.0.19 done
+[2024-12-10T09:17:09.589Z] #7 DONE 0.0s
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Deploy Image)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] withDockerRegistry
+
+[2024-12-10T09:17:11.387Z] WARNING! Using --password via the CLI is insecure. Use --password-stdin.
+[2024-12-10T09:17:12.682Z] WARNING! Your password will be stored unencrypted in /var/lib/jenkins/workspace/docker_build@tmp/391bb43c-0eb6-4d7d-955e-de80b80bc12d/config.json.
+[2024-12-10T09:17:12.682Z] Configure a credential helper to remove this warning. See
+[2024-12-10T09:17:12.682Z] https://docs.docker.com/engine/reference/commandline/login/#credentials-store
+[2024-12-10T09:17:12.682Z] 
+[2024-12-10T09:17:12.682Z] Login Succeeded
+[Pipeline] {
+[Pipeline] isUnix
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] sh
+[2024-12-10T09:17:13.291Z] + docker tag valentinstupa/custom-nginx:1.0.19 valentinstupa/custom-nginx:1.0.19
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] isUnix
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] sh
+[2024-12-10T09:17:14.104Z] + docker push valentinstupa/custom-nginx:1.0.19
+[2024-12-10T09:17:14.104Z] The push refers to repository [docker.io/valentinstupa/custom-nginx]
+[2024-12-10T09:17:14.355Z] b7147ded60bb: Preparing
+[2024-12-10T09:17:14.355Z] d47e4d19ddec: Preparing
+[2024-12-10T09:17:14.355Z] 8e58314e4a4f: Preparing
+[2024-12-10T09:17:14.355Z] ed94af62a494: Preparing
+[2024-12-10T09:17:14.355Z] 875b5b50454b: Preparing
+[2024-12-10T09:17:14.355Z] 63b5f2c0d071: Preparing
+[2024-12-10T09:17:14.355Z] d000633a5681: Preparing
+[2024-12-10T09:17:14.355Z] 63b5f2c0d071: Waiting
+[2024-12-10T09:17:14.355Z] d000633a5681: Waiting
+[2024-12-10T09:17:15.268Z] 875b5b50454b: Layer already exists
+[2024-12-10T09:17:15.268Z] ed94af62a494: Layer already exists
+[2024-12-10T09:17:15.268Z] 8e58314e4a4f: Layer already exists
+[2024-12-10T09:17:15.268Z] b7147ded60bb: Layer already exists
+[2024-12-10T09:17:15.268Z] d47e4d19ddec: Layer already exists
+[2024-12-10T09:17:15.820Z] 63b5f2c0d071: Layer already exists
+[2024-12-10T09:17:15.820Z] d000633a5681: Layer already exists
+[2024-12-10T09:17:17.165Z] 1.0.19: digest: sha256:550dba980aaf852eabcfd6a46f83612e8e90f640209549c30c46a2107b8a9bdc size: 1777
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // withDockerRegistry
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Remove Unused docker image)
+[Pipeline] sh
+[2024-12-10T09:17:18.589Z] + docker rmi valentinstupa/custom-nginx:1.0.19
+[2024-12-10T09:17:18.589Z] Untagged: valentinstupa/custom-nginx:1.0.19
+[2024-12-10T09:17:18.589Z] Untagged: valentinstupa/custom-nginx@sha256:550dba980aaf852eabcfd6a46f83612e8e90f640209549c30c46a2107b8a9bdc
+[2024-12-10T09:17:18.589Z] Deleted: sha256:4f8ab3ca943f79fbc4c33800a894b882dffff7e4d9b1ab66bd875fc7265b3fa5
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // timestamps
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+Finished: SUCCESS

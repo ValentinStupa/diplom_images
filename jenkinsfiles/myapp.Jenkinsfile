@@ -8,6 +8,7 @@ pipeline {
         registry = 'valentinstupa/custom-nginx'
         registryCredential = 'dockerhub_access'
         dockerImage = ''
+        KUBECONFIG = 'kube_config'
     }
 
     // agent {
@@ -46,6 +47,37 @@ pipeline {
             steps {
                 sh "docker rmi $registry:1.0.$BUILD_NUMBER"
             }
+        }
+//      
+//  Work with K8s cluster
+//
+        stage('Checkout K8s repo') {
+            steps {
+                checkout scmGit(branches: [[name: 'main']],
+                userRemoteConfigs: [[url: 'https://github.com/ValentinStupa/diplom_k8s.git']])
+            }
+        }
+        stage('Deploy to K8s') {
+                steps {
+                    script {
+                        // Set KUBECONFIG environment variable
+                        withEnv(["KUBECONFIG=${KUBECONFIG}"]) {
+                            // Get the latest image tag from the GIT_COMMIT environment variable
+                            def imageTag = "1.0.${BUILD_NUMBER}"
+
+                            sh "echo 1.0.${BUILD_NUMBER}"
+                            
+                            // Show file in the directory
+                            sh "ls -l manifest_files/myapp/nginx_deploy.yml"
+                            // Replace the placeholder ${IMAGE_TAG} in deployment.yaml with the actual image tag
+                            //sh "sed -i 's|\${IMAGE_TAG}|${imageTag}|' manifest_files/myapp/nginx_deploy.yml"
+                            sh "echo ${IMAGE_TAG} -- ${imageTag}"
+                            // Apply deployment.yaml to the K8s cluster
+                            //sh "kubectl apply -f deployment.yaml"
+                            
+                        }
+                    }
+                }
         }
     }
 }
