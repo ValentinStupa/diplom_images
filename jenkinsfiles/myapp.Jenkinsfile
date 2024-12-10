@@ -25,9 +25,10 @@ pipeline {
                 echo 'Hello World'
             }
         }
-        stage('Cloning Git') {
+        stage('Checkout') {
             steps {
-                git 'https://github.com/ValentinStupa/diplom_images.git'
+                checkout scmGit(branches: [[name: 'main']],
+                userRemoteConfigs: [[url: 'https://github.com/ValentinStupa/diplom_images.git']])
             }
         }
         stage('Building image') {
