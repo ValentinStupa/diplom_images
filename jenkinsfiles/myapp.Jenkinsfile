@@ -10,9 +10,10 @@ pipeline {
         dockerImage = ''
     }
 
-    agent {
-        label 'main' // Собирать только по этой ветке
-    }
+    // agent {
+    //     label 'main' // Собирать только по этой ветке
+    // }
+    agent any
     options {
         /* groovylint-disable-next-line DuplicateStringLiteral */
         buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
