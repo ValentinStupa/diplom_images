@@ -61,8 +61,9 @@ pipeline {
         stage('Get PREVIOUS_BUILD_NUMBER') {
             steps {
                 script {
-                    def PREVIOUS_BUILD_NUMBER = sh(returnStdout: true, script: 'grep "image:" ${manifest}|awk -F \":\" \'{print $3}\'')
+                    PREVIOUS_BUILD_NUMBER = sh(returnStdout: true, script: 'grep "image:" ${manifest}|awk -F \":\" \'{print $3}\'')
                     echo "Output: ${PREVIOUS_BUILD_NUMBER}"
+                    env.pre_build = PREVIOUS_BUILD_NUMBER
 
                 }
                 
@@ -84,9 +85,9 @@ pipeline {
                             sh "ls -l ${manifest}"
                             
                             // Replace the placeholder ${IMAGE_TAG} in deployment.yaml with the actual image tag
-                            sh "echo ${PREVIOUS_BUILD_NUMBER}"
+                            sh "echo ${env.pre_build}"
                             sh "echo ${imageTag}"
-                            sh "sed -i 's|\${PREVIOUS_BUILD_NUMBER}|\${imageTag}|' ${manifest}"
+                            sh "sed -i 's|\${env.pre_build}|\${imageTag}|' ${manifest}"
                             sh "grep 'image:' ${manifest}"
                              
                             // Apply deployment.yaml to the K8s cluster
