@@ -22,6 +22,15 @@ pipeline {
         timestamps()    // Приписывает timestamp к шагам
     }
     stages {
+        stage("clean workspace") {
+            steps {
+                script {
+                    sh "ls"
+                    deleteDir()
+                    sh "ls"
+                }
+             }
+        }
         stage('Checkout docker repo') {
             steps {
                 checkout scmGit(branches: [[name: 'main']],
@@ -96,5 +105,6 @@ pipeline {
                     }
                 }
         }
+
     }
 }
