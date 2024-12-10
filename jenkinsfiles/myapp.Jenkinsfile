@@ -81,9 +81,11 @@ pipeline {
                         withEnv(["KUBECONFIG=${KUBECONFIG}"]) {
                             // Get the latest image tag from the GIT_COMMIT environment variable
                             def imageTag = "1.0.${BUILD_NUMBER}"
-                            def file = readFile manifest
-                            file = file.replace(env.pre_build, imageTag)
-                            writeFile file: manifest, text: file
+                            
+                            // def file = readFile manifest
+                            // file = file.replace(env.pre_build, imageTag)
+                            // writeFile file: manifest, text: file
+                            
                             // Show file in the directory
                             sh "ls -l ${manifest}"
                             
@@ -96,6 +98,7 @@ pipeline {
                             //    sed -i 's|${env.pre_build}|${imageTag}|' ${manifest}_copy
                             //    grep 'image:' ${manifest}
                             // """
+                            sh "sed -i 's|${env.pre_build.trim()}|${imageTag}|' ${manifest}"
                             sh "grep 'image:' ${manifest}"
                             
                              
