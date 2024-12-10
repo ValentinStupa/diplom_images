@@ -9,6 +9,7 @@ pipeline {
         registryCredential = 'dockerhub_access'
         dockerImage = ''
         KUBECONFIG = 'kube_config'
+        manifest = "manifest_files/myapp/nginx_deploy.yml"
     }
 
     // agent {
@@ -57,6 +58,17 @@ pipeline {
                 userRemoteConfigs: [[url: 'https://github.com/ValentinStupa/diplom_k8s.git']])
             }
         }
+        stage('Get PREVIOUS_BUILD_NUMBER') {
+            steps {
+                script {
+                    def PREVIOUS_BUILD_NUMBER = sh(returnStdout: true, script: 'grep "image:" ${manifest}|awk -F \":\" \'{print $3}\'')
+                    echo "Output: ${PREVIOUS_BUILD_NUMBER}"
+
+                }
+                
+                
+            }
+        }
         stage('Deploy to K8s') {
                 steps {
                     script {
@@ -64,7 +76,7 @@ pipeline {
                         withEnv(["KUBECONFIG=${KUBECONFIG}"]) {
                             // Get the latest image tag from the GIT_COMMIT environment variable
                             def imageTag = "1.0.${BUILD_NUMBER}"
-                            def manifest = "manifest_files/myapp/nginx_deploy.yml"
+                            //def manifest = "manifest_files/myapp/nginx_deploy.yml"
 
                             sh "echo 1.0.${BUILD_NUMBER}"
                             
@@ -72,7 +84,9 @@ pipeline {
                             sh "ls -l ${manifest}"
                             // Replace the placeholder ${IMAGE_TAG} in deployment.yaml with the actual image tag
                             //sh "sed -i 's|\${IMAGE_TAG}|${imageTag}|' manifest_files/myapp/nginx_deploy.yml"
+                             
                             sh "grep 'image:' ${manifest}"
+                            
                             // Apply deployment.yaml to the K8s cluster
                             //sh "kubectl apply -f deployment.yaml"
                             
