@@ -8,7 +8,8 @@ pipeline {
         registry = 'valentinstupa/custom-nginx'
         registryCredential = 'dockerhub_access'
         dockerImage = ''
-        KUBECONFIG = 'kube_config'
+        //KUBECONFIG = 'kube_config'
+        KUBECONFIG = "/var/lib/jenkins/.kube/config"
         manifest = "manifest_files/myapp/nginx_deploy.yml"
     }
 
