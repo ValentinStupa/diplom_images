@@ -90,6 +90,7 @@ pipeline {
                             sh """
                                sed -i 's|${env.pre_build}|${imageTag}|' ${manifest}
                                cp -p ${manifest} ${manifest}_copy
+                               sed -e 's|${env.pre_build}|${imageTag}|' ${manifest}_copy
                                grep 'image:' ${manifest}
                             """
                             
