@@ -89,7 +89,7 @@ pipeline {
                             echo "${imageTag}"
                             sh """#!/bin/bash
                                sed -i 's|"${env.pre_build}"|"${imageTag}"|' ${manifest}
-                               """
+                            """
                             sh "grep 'image:' ${manifest}"
                              
                             // Apply deployment.yaml to the K8s cluster
