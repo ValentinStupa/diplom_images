@@ -88,7 +88,7 @@ pipeline {
                             echo "${env.pre_build}"
                             echo "${imageTag}"
                             sh """#!/bin/bash
-                               sed -i 's="${env.pre_build}"="${imageTag}"=g' ${manifest}
+                               sed -i 's|"${env.pre_build}"|"${imageTag}"|' ${manifest}
                                """
                             sh "grep 'image:' ${manifest}"
                              
