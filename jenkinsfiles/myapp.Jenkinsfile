@@ -76,6 +76,7 @@ pipeline {
         }
         stage('Change build number') {
                 steps {
+                    script {
                             // Get the latest image tag from the GIT_COMMIT environment variable
                             def imageTag = "1.0.${BUILD_NUMBER}"
                             
@@ -93,6 +94,7 @@ pipeline {
                                sed -i 's|${env.pre_build.trim()}|${imageTag}|' ${manifest}
                                grep 'image:' ${manifest}
                             """                        
+                    }
                 }
         }
         stage('Deploy to K8s cluster') {
