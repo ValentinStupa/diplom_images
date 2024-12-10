@@ -18,7 +18,7 @@ pipeline {
     agent any
     options {
         /* groovylint-disable-next-line DuplicateStringLiteral */
-        buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
+        buildDiscarder(logRotator(numToKeepStr: '5', artifactNumToKeepStr: '5'))
         timestamps()    // Приписывает timestamp к шагам
     }
     stages {
@@ -88,7 +88,7 @@ pipeline {
                             echo "${env.pre_build}"
                             echo "${imageTag}"
                             sh """#!/bin/bash
-                               sed -i 's|${env.pre_build}|${imageTag}|' ${manifest}
+                               sed -i 's|\${env.pre_build}|${imageTag}|' ${manifest}
                             """
                             sh "grep 'image:' ${manifest}"
                              
