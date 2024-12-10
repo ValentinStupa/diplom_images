@@ -8,14 +8,12 @@ pipeline {
         registry = 'valentinstupa/custom-nginx'
         registryCredential = 'dockerhub_access'
         dockerImage = ''
-        //KUBECONFIG = "/var/lib/jenkins/.kube/config" // hardcode -- bad way
-        KUBECONFIG = 'kube_conf' // Добавить конфигурационный файл из папки "./kube" в креди jenkins и в pipeline использовать id
     }
 
-    // agent {
-    //     label 'main' // Собирать только по этой ветке
-    // }
-    agent any
+    agent {
+        label 'main' // Собирать только по этой ветке
+    }
+    //agent any
     options {
         /* groovylint-disable-next-line DuplicateStringLiteral */
         buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
@@ -28,34 +26,26 @@ pipeline {
                 userRemoteConfigs: [[url: 'https://github.com/ValentinStupa/diplom_images.git']])
             }
         }
-        
-        stage('Checkout K8S repo') {
-            steps {
-                checkout scmGit(branches: [[name: 'main']],
-                userRemoteConfigs: [[url: 'https://github.com/ValentinStupa/diplom_k8s.git']])
-            }
-        }
-
         stage('Building image') {
-            steps{
+            steps {
                 script {
-                     dockerImage = docker.build registry + ":1.0.$BUILD_NUMBER"
+                    dockerImage = docker.build registry + ":1.0.$BUILD_NUMBER"
                 }
             }
         }
         stage('Deploy Image') {
-        steps{
-            script {
-            docker.withRegistry( '', registryCredential ) {
-                dockerImage.push()
+            steps {
+                script {
+                    docker.withRegistry('', registryCredential) {
+                        dockerImage.push()
+                    }
+                }
             }
-            }
-        }
         }
         stage('Remove Unused docker image') {
-        steps{
-            sh "docker rmi $registry:1.0.$BUILD_NUMBER"
-        }
+            steps {
+                sh "docker rmi $registry:1.0.$BUILD_NUMBER"
+            }
         }
     }
 }
