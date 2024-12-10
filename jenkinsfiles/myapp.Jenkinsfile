@@ -76,12 +76,11 @@ pipeline {
         }
         stage('Change build number') {
                 steps {
-                    script {
-                        // Set KUBECONFIG environment variable
-                        withEnv(["KUBECONFIG=${KUBECONFIG}"]) {
                             // Get the latest image tag from the GIT_COMMIT environment variable
                             def imageTag = "1.0.${BUILD_NUMBER}"
                             
+                            // Other option to replace tag into files
+
                             // def file = readFile manifest
                             // file = file.replace(env.pre_build, imageTag)
                             // writeFile file: manifest, text: file
@@ -90,25 +89,25 @@ pipeline {
                             sh "ls -l ${manifest}"
                             
                             // Replace the placeholder ${IMAGE_TAG} in deployment.yaml with the actual image tag
-                            echo "${env.pre_build}"
-                            echo "${imageTag}"
-                            // sh """
-                            //    sed -i 's|\$"{env.pre_build}"|\$"{imageTag}"|' ${manifest}
-                            //    cp -p ${manifest} ${manifest}_copy
-                            //    sed -i 's|${env.pre_build}|${imageTag}|' ${manifest}_copy
-                            //    grep 'image:' ${manifest}
-                            // """
-                            sh "sed -i 's|${env.pre_build.trim()}|${imageTag}|' ${manifest}"
-                            sh "grep 'image:' ${manifest}"
-                            
-                             
-                            // Apply deployment.yaml to the K8s cluster
-                            //sh "kubectl apply -f deployment.yaml"
-                            
-                        }
-                    }
+                            sh """
+                               sed -i 's|${env.pre_build.trim()}|${imageTag}|' ${manifest}
+                               grep 'image:' ${manifest}
+                            """                        
                 }
         }
+        stage('Deploy to K8s cluster') {
+            steps {
+                script {
+                    // Set KUBECONFIG environment variable
+                    withEnv(["KUBECONFIG=${KUBECONFIG}"]){
+                            
+                            // Apply deployment.yaml to the K8s cluster
+                            //sh "kubectl apply -f deployment.yaml"
+                            sh "kubectl get nodes"
+                        }
+                }
 
+            }
+        }
     }
 }
