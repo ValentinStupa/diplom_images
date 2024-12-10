@@ -85,9 +85,11 @@ pipeline {
                             sh "ls -l ${manifest}"
                             
                             // Replace the placeholder ${IMAGE_TAG} in deployment.yaml with the actual image tag
-                            sh "echo ${env.pre_build}"
-                            sh "echo ${imageTag}"
-                            sh "sed -i 's=\${env.pre_build}=\${imageTag}=g' ${manifest}"
+                            echo "${env.pre_build}"
+                            echo "${imageTag}"
+                            sh """#!/bin/bash
+                               sed -i 's="${env.pre_build}"="${imageTag}"=g' ${manifest}
+                               """
                             sh "grep 'image:' ${manifest}"
                              
                             // Apply deployment.yaml to the K8s cluster
