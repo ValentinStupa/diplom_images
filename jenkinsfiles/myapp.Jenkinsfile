@@ -25,9 +25,7 @@ pipeline {
         stage("clean workspace") {
             steps {
                 script {
-                    sh "ls"
                     deleteDir()
-                    sh "ls"
                 }
              }
         }
@@ -83,10 +81,6 @@ pipeline {
                         withEnv(["KUBECONFIG=${KUBECONFIG}"]) {
                             // Get the latest image tag from the GIT_COMMIT environment variable
                             def imageTag = "1.0.${BUILD_NUMBER}"
-                            //def manifest = "manifest_files/myapp/nginx_deploy.yml"
-
-                            sh "echo 1.0.${BUILD_NUMBER}"
-                            
                             // Show file in the directory
                             sh "ls -l ${manifest}"
                             
@@ -95,6 +89,7 @@ pipeline {
                             echo "${imageTag}"
                             sh """#!/bin/bash
                                sed -i 's|\${env.pre_build}|${imageTag}|' ${manifest}
+                               cp -p ${manifest} ${manifest}_copy
                             """
                             sh "grep 'image:' ${manifest}"
                              
