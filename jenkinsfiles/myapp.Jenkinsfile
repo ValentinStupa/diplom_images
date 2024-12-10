@@ -90,8 +90,9 @@ pipeline {
                             sh """#!/bin/bash
                                sed -i 's|\${env.pre_build}|${imageTag}|' ${manifest}
                                cp -p ${manifest} ${manifest}_copy
+                               grep 'image:' ${manifest}
                             """
-                            sh "grep 'image:' ${manifest}"
+                            
                              
                             // Apply deployment.yaml to the K8s cluster
                             //sh "kubectl apply -f deployment.yaml"
