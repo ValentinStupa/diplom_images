@@ -20,11 +20,11 @@ pipeline {
         timestamps()    // Приписывает timestamp к шагам
     }
     stages {
-        stage('Example') {
-            steps {
-                echo 'Hello World'
-            }
-        }
+        // stage('Example') {
+        //     steps {
+        //         echo 'Hello World'
+        //     }
+        // }
         stage('Checkout') {
             steps {
                 checkout scmGit(branches: [[name: 'main']],
