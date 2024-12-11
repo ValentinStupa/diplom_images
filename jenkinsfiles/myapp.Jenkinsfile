@@ -129,9 +129,9 @@ pipeline {
                             // Apply deployment.yaml to the K8s cluster
                             
                             sh """
-                                kubectl get nodes
-                                kubectl apply -f ${manifest}
-                                kubectl describe deployment.apps/nginx | grep 'Image:'
+                               kubectl get nodes
+                               kubectl apply -f ${manifest}
+                               kubectl describe deployment.apps/nginx | grep 'Image:'
                             """
 
                         }
