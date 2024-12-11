@@ -11,9 +11,7 @@ pipeline {
         KUBECONFIG = "/var/lib/jenkins/.kube/config"
         manifest = "manifest_files/myapp/nginx_deploy.yml"
         version = 'v'
-        //
-        git url: 'https://github.com/ValentinStupa/diplom_images.git'
-        env.GIT_TAG_NAME = gitTagName()
+
 
     }
 
@@ -30,14 +28,13 @@ pipeline {
         stage("Show git tag") {
             steps {
                 script {
-                    echo "Git tag: ${env.GIT_TAG_NAME}"
+                    def tag = sh(returnStdout: true, script: "git tag --list | tail -1").trim()
+                    echo "Git tag: $tag"
 
                 } 
             }
 
         }
-
-
         stage("clean workspace") {
             steps {
                 script {
