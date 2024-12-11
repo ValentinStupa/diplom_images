@@ -28,8 +28,9 @@ pipeline {
         stage("Show git tag") {
             steps {
                 script {
-                    def tag = sh(returnStdout: true, script: "git tag --list | tail -1").trim()
-                    echo "Git tag: $tag"
+                    def git_tag = sh(returnStdout: true, script: "git tag --list | tail -1").trim()
+                    echo "Git tag: $git_tag"
+                    env.tag = git_tag
 
                 } 
             }
@@ -51,7 +52,7 @@ pipeline {
         stage('Building image') {
             steps {
                 script {
-                    dockerImage = docker.build registry + ":$version-$BUILD_NUMBER"
+                    dockerImage = docker.build registry + ":${env.tag}"
                 }
             }
         }
@@ -66,7 +67,7 @@ pipeline {
         }
         stage('Remove Unused docker image') {
             steps {
-                sh "docker rmi $registry:$version-$BUILD_NUMBER"
+                sh "docker rmi $registry:${env.tag}"
             }
         }
 //      
