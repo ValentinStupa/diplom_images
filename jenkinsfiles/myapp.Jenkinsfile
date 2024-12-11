@@ -47,16 +47,16 @@ pipeline {
                 userRemoteConfigs: [[url: 'https://github.com/ValentinStupa/diplom_images.git']])
             }
         }
-        stage('Add tag to index.html') {
-            steps {
-                script {
-                    sh """
-                        sed -i '$d' index.html
-                        sed -i -e '$a<tagname>${env.tag}</tagname>' index.html
-                        """                        
-                }   
-            }
-        }
+        // stage('Add tag to index.html') {
+        //     steps {
+        //         script {
+        //             sh """
+        //                 sed -i '$d' index.html
+        //                 sed -i -e '$a<tagname>${env.tag}</tagname>' index.html
+        //                 """                        
+        //         }   
+        //     }
+        // }
         stage('Building image') {
             steps {
                 script {
