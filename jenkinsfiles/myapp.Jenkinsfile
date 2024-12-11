@@ -57,9 +57,7 @@ pipeline {
                         sed -i -e '$a<tagname>${env.tag}</tagname>' index.html
                         """                        
 
-                }
-                
-                
+                }   
             }
         }
 
