@@ -10,6 +10,7 @@ pipeline {
         dockerImage = ''
         KUBECONFIG = "/var/lib/jenkins/.kube/config"
         manifest = "manifest_files/myapp/nginx_deploy.yml"
+        version = 'v'
     }
 
     // agent {
@@ -38,22 +39,22 @@ pipeline {
         stage('Building image') {
             steps {
                 script {
-                    dockerImage = docker.build registry + ":1.0.$BUILD_NUMBER"
+                    dockerImage = docker.build registry + ":$version-$BUILD_NUMBER"
                 }
             }
         }
-        // stage('Deploy Image') {
-        //     steps {
-        //         script {
-        //             docker.withRegistry('', registryCredential) {
-        //                 dockerImage.push()
-        //             }
-        //         }
-        //     }
-        // }
+        stage('Deploy Image') {
+            steps {
+                script {
+                    docker.withRegistry('', registryCredential) {
+                        dockerImage.push()
+                    }
+                }
+            }
+        }
         stage('Remove Unused docker image') {
             steps {
-                sh "docker rmi $registry:1.0.$BUILD_NUMBER"
+                sh "docker rmi $registry:$version-$BUILD_NUMBER"
             }
         }
 //      
@@ -78,7 +79,7 @@ pipeline {
                 steps {
                     script {
                             // Get the latest image tag from the GIT_COMMIT environment variable
-                            def imageTag = "1.0.${BUILD_NUMBER}"
+                            def imageTag = "$version-${BUILD_NUMBER}"
                             
                             // Other option to replace tag into files
 
@@ -98,7 +99,7 @@ pipeline {
                 }
         }
         stage('Deploy to K8s cluster') {
-            when { tag "v-*" }
+            when { tag "${version}-*" }
             steps {
                 script {
                     // Set KUBECONFIG environment variable
