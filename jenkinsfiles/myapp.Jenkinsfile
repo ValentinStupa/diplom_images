@@ -127,8 +127,13 @@ pipeline {
                     withEnv(["KUBECONFIG=${KUBECONFIG}"]){
                             
                             // Apply deployment.yaml to the K8s cluster
-                            //sh "kubectl apply -f deployment.yaml"
-                            sh "kubectl get nodes"
+                            
+                            sh """
+                                kubectl get nodes
+                                kubectl apply -f ${manifest}
+                                kubectl describe deployment.apps/nginx | grep 'Image:'
+                            """
+
                         }
                 }
 
