@@ -11,10 +11,7 @@ pipeline {
         KUBECONFIG = "/var/lib/jenkins/.kube/config"
         manifest = "manifest_files/myapp/nginx_deploy.yml"
         version = 'v'
-
-
     }
-
     // agent {
     //     label 'main' // Собирать только по этой ветке
     // }
@@ -25,7 +22,7 @@ pipeline {
         timestamps()    // Приписывает timestamp к шагам
     }
     stages {
-        stage("Show git tag") {
+        stage("Get last git tag") {
             steps {
                 script {
                     def git_tag = sh(returnStdout: true, script: "git tag --list | tail -1").trim()
@@ -126,7 +123,7 @@ pipeline {
                     // Set KUBECONFIG environment variable
                     withEnv(["KUBECONFIG=${KUBECONFIG}"]){
                             
-                            // Apply deployment.yaml to the K8s cluster
+                            // Apply manifest.yaml to the K8s cluster
                             
                             sh """
                                kubectl get nodes
