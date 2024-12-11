@@ -98,6 +98,7 @@ pipeline {
                 }
         }
         stage('Deploy to K8s cluster') {
+            when { tag "v-*" }
             steps {
                 script {
                     // Set KUBECONFIG environment variable
