@@ -117,10 +117,12 @@ pipeline {
 //                 }
 //         }
         stage('Deploy to K8s cluster') {
-            when { 
-                tag "${env.tag}"
-                buildingTag()
-                }
+            when { tag pattern: "${env.tag}"}
+            // when { 
+            //     tag "${env.tag}"
+
+            //     buildingTag()
+            //     }
             steps {
                 script {
                     // Set KUBECONFIG environment variable
