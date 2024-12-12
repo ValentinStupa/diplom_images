@@ -117,7 +117,10 @@ pipeline {
                 }
         }
         stage('Deploy to K8s cluster') {
-            //when { tag "${env.tag}" }
+            when { 
+                tag "${env.tag}" 
+                buildingtag()
+                }
             steps {
                 script {
                     // Set KUBECONFIG environment variable
@@ -125,11 +128,12 @@ pipeline {
                             
                             // Apply manifest.yaml to the K8s cluster
                             
-                            sh """
-                               kubectl get nodes
-                               kubectl apply -f ${manifest}
-                               kubectl describe deployment.apps/nginx | grep 'Image:'
-                            """
+                            sh "kubectl get nodes"
+                            // sh """
+                            //    kubectl get nodes
+                            //    kubectl apply -f ${manifest}
+                            //    kubectl describe deployment.apps/nginx | grep 'Image:'
+                            // """
 
                         }
                 }
