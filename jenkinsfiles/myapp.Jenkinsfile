@@ -119,7 +119,7 @@ pipeline {
         stage('Deploy to K8s cluster') {
             when { 
                // tag "${env.tag}" 
-                buildingtag()
+                buildingTag()
                 }
             steps {
                 script {
