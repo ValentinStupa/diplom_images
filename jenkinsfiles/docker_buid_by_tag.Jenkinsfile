@@ -124,7 +124,7 @@ pipeline {
                 }
         }
         stage('Deploy to K8s cluster') {
-            when {tag pattern: "${env.GIT_TAG_NAME}"}
+            //when {tag pattern: "${env.GIT_TAG_NAME}"}
             steps {
                 script {
                     // Set KUBECONFIG environment variable
