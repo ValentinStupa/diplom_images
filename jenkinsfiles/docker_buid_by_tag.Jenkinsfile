@@ -11,6 +11,7 @@ pipeline {
         KUBECONFIG = "/var/lib/jenkins/.kube/config"
         manifest = "manifest_files/myapp/nginx_deploy.yml"
         version = 'v'
+        TAG_NAME = "${env.GIT_TAG_NAME}"
     }
     // agent {
     //     label 'main' // Собирать только по этой ветке
@@ -22,34 +23,45 @@ pipeline {
         timestamps()    // Приписывает timestamp к шагам
     }
     stages {
-        stage("Get last git tag") {
+        stage('Checkout') {
             steps {
                 script {
-                    def git_tag = sh(returnStdout: true, script: "git tag --list | tail -1").trim()
-                    echo "Git tag: $git_tag"
-                    env.tag = git_tag
-                } 
-            }
-        }
-        stage("clean workspace") {
-            steps {
-                script {
-                    deleteDir()
+                    // Проверяем, что сборка запускается именно по тегу
+                    if (!env.GIT_TAG_NAME) {
+                        error "Сборка запускается только по тегам. Остановлено."
+                    }
                 }
-             }
-        }
-        stage('Checkout docker repo') {
-            steps {
-                checkout scmGit(branches: [[name: 'main']],
-                userRemoteConfigs: [[url: 'https://github.com/ValentinStupa/diplom_images.git']])
+                checkout scm
             }
         }
+        // stage("Get last git tag") {
+        //     steps {
+        //         script {
+        //             def git_tag = sh(returnStdout: true, script: "git tag --list | tail -1").trim()
+        //             echo "Git tag: $git_tag"
+        //             env.tag = git_tag
+        //         } 
+        //     }
+        // }
+        // stage("clean workspace") {
+        //     steps {
+        //         script {
+        //             deleteDir()
+        //         }
+        //      }
+        // }
+        // stage('Checkout docker repo') {
+        //     steps {
+        //         checkout scmGit(branches: [[name: 'main']],
+        //         userRemoteConfigs: [[url: 'https://github.com/ValentinStupa/diplom_images.git']])
+        //     }
+        // }
         stage('Add tag to index.html') {
             steps {
                 script {
                     sh """
                         sed -i '\$d' index.html
-                        sed -i -e '\$a<tagname>${env.tag}</tagname>' index.html
+                        sed -i -e '\$a<tagname>${env.GIT_TAG_NAME}</tagname>' index.html
                         """                        
                 }   
             }
@@ -57,11 +69,11 @@ pipeline {
         stage('Building image') {
             steps {
                 script {
-                    dockerImage = docker.build registry + ":${env.tag}"
+                    dockerImage = docker.build registry + ":${env.GIT_TAG_NAME}"
                 }
             }
         }
-        stage('Deploy Image') {
+        stage('Push Image') {
             steps {
                 script {
                     docker.withRegistry('', registryCredential) {
@@ -72,12 +84,10 @@ pipeline {
         }
         stage('Remove Unused docker image') {
             steps {
-                sh "docker rmi $registry:${env.tag}"
+                sh "docker rmi $registry:${env.GIT_TAG_NAME}"
             }
         }
-//      
-//  Work with K8s cluster
-//
+
         stage('Checkout K8s repo') {
             steps {
                 checkout scmGit(branches: [[name: 'main']],
@@ -97,7 +107,7 @@ pipeline {
                 steps {
                     script {
                             // Get the latest image tag from the GIT_COMMIT environment variable
-                            def imageTag = "${env.tag}"
+                            def imageTag = "${env.GIT_TAG_NAME}"
                             
                             // Other option to replace tag into files
 
@@ -117,7 +127,7 @@ pipeline {
                 }
         }
         stage('Deploy to K8s cluster') {
-            when {tag pattern: "${env.tag}"}
+            when {tag pattern: "${env.GIT_TAG_NAME}"}
             steps {
                 script {
                     // Set KUBECONFIG environment variable
@@ -137,4 +147,14 @@ pipeline {
             }
         }
     }
+
+    post {
+        always {
+            echo "Pipeline completed for tag: ${env.GIT_TAG_NAME}"
+        }
+        failure {
+            echo "Pipeline failed for tag: ${env.GIT_TAG_NAME}"
+        }
+    }
+
 }
