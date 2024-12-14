@@ -20,6 +20,13 @@ pipeline {
     }
 
     stages {
+        stage("clean workspace") {
+            steps {
+                script {
+                    deleteDir()
+                }
+             }
+        }
         stage('Checkout') {
             steps {
                 checkout([
@@ -39,28 +46,7 @@ pipeline {
                 }
             }
         }
-        // stage("Get last git tag") {
-        //     steps {
-        //         script {
-        //             def git_tag = sh(returnStdout: true, script: "git tag --list | tail -1").trim()
-        //             echo "Git tag: $git_tag"
-        //             env.tag = git_tag
-        //         } 
-        //     }
-        // }
-        // stage("clean workspace") {
-        //     steps {
-        //         script {
-        //             deleteDir()
-        //         }
-        //      }
-        // }
-        // stage('Checkout docker repo') {
-        //     steps {
-        //         checkout scmGit(branches: [[name: 'main']],
-        //         userRemoteConfigs: [[url: 'https://github.com/ValentinStupa/diplom_images.git']])
-        //     }
-        // }
+
         stage('Add tag to index.html') {
             steps {
                 script {
@@ -155,10 +141,10 @@ pipeline {
 
     post {
         always {
-            echo "Pipeline completed for tag: ${TAG_NAME} / $TAG_NAME"
+            echo "Pipeline completed for tag: ${TAG_NAME}"
         }
         failure {
-            echo "Pipeline failed for tag: ${TAG_NAME} / $TAG_NAME"
+            echo "Pipeline failed for tag: ${TAG_NAME}"
         }
     }
 
