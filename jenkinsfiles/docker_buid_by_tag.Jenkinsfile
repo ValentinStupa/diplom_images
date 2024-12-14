@@ -24,7 +24,7 @@ pipeline {
             steps {
                 script {
                     // Проверяем, что сборка запускается именно по тегу
-                    if (!env.GIT_TAG_NAME) {
+                    if (!$TAG_NAME) {
                         error "Сборка запускается только по тегам. Остановлено."
                     }
                 }
@@ -58,7 +58,7 @@ pipeline {
                 script {
                     sh """
                         sed -i '\$d' index.html
-                        sed -i -e '\$a<tagname>${env.GIT_TAG_NAME}</tagname>' index.html
+                        sed -i -e '\$a<tagname>${env.TAG_NAME}</tagname>' index.html
                         """                        
                 }   
             }
@@ -66,7 +66,7 @@ pipeline {
         stage('Building image') {
             steps {
                 script {
-                    dockerImage = docker.build registry + ":${env.GIT_TAG_NAME}"
+                    dockerImage = docker.build registry + ":${env.TAG_NAME}"
                 }
             }
         }
@@ -81,7 +81,7 @@ pipeline {
         }
         stage('Remove Unused docker image') {
             steps {
-                sh "docker rmi $registry:${env.GIT_TAG_NAME}"
+                sh "docker rmi $registry:${env.TAG_NAME}"
             }
         }
 
@@ -104,7 +104,7 @@ pipeline {
                 steps {
                     script {
                             // Get the latest image tag from the GIT_COMMIT environment variable
-                            def imageTag = "${env.GIT_TAG_NAME}"
+                            def imageTag = "${env.TAG_NAME}"
                             
                             // Other option to replace tag into files
 
@@ -124,7 +124,7 @@ pipeline {
                 }
         }
         stage('Deploy to K8s cluster') {
-            when {tag pattern: "${env.GIT_TAG_NAME}"}
+            when {tag pattern: "${env.TAG_NAME}"}
             steps {
                 script {
                     // Set KUBECONFIG environment variable
@@ -147,10 +147,10 @@ pipeline {
 
     post {
         always {
-            echo "Pipeline completed for tag: ${env.GIT_TAG_NAME}"
+            echo "Pipeline completed for tag: ${env.TAG_NAME}"
         }
         failure {
-            echo "Pipeline failed for tag: ${env.GIT_TAG_NAME}"
+            echo "Pipeline failed for tag: ${env.TAG_NAME}"
         }
     }
 
