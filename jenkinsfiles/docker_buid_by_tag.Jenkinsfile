@@ -4,32 +4,39 @@
 properties([disableConcurrentBuilds()])     // Не позволяет одновременно запускать несколько сборок
 
 pipeline {
-    environment {
-        registry = 'valentinstupa/custom-nginx'
-        registryCredential = 'dockerhub_access'
-        dockerImage = ''
-        KUBECONFIG = "/var/lib/jenkins/.kube/config"
-        manifest = "manifest_files/myapp/nginx_deploy.yml"
-        version = 'v'
-        TAG_NAME = ""
-    }
     agent any
     options {
         /* groovylint-disable-next-line DuplicateStringLiteral */
         buildDiscarder(logRotator(numToKeepStr: '5', artifactNumToKeepStr: '5'))
         timestamps()    // Приписывает timestamp к шагам
     }
+    environment {
+        registry = 'valentinstupa/custom-nginx'
+        registryCredential = 'dockerhub_access'
+        dockerImage = ''
+        KUBECONFIG = "/var/lib/jenkins/.kube/config"
+        manifest = "manifest_files/myapp/nginx_deploy.yml"
+        TAG_NAME = ""
+    }
+
     stages {
         stage('Checkout') {
             steps {
+                checkout([
+                    $class: 'GitSCM', 
+                    branches: [[name: '*/tags/*']],
+                    doGenerateSubmoduleConfigurations: false, 
+                    extensions: [[$class: 'CloneOption', shallow: false]], 
+                    userRemoteConfigs: [[url: 'https://github.com/ValentinStupa/diplom_images.git']]
+                ])
                 script {
-                    // Проверяем, что сборка запускается именно по тегу
-                    TAG_NAME = sh(script: 'git describe --tags --exact-match', returnStdout: true).trim()
-                    if (!TAG_NAME) {
+                    // Извлекаем имя тега через git describe
+                    TAG_NAME = sh(returnStdout: true, script: 'git describe --tags --exact-match || true').trim()
+                    if (TAG_NAME == "") {
                         error "Сборка запускается только по тегам. Остановлено."
                     }
+                    echo "Собираем по тегу: ${TAG_NAME}"
                 }
-                checkout scm
             }
         }
         // stage("Get last git tag") {
