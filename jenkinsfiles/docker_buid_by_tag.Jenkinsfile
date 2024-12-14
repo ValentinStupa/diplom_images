@@ -25,7 +25,7 @@ pipeline {
         stage("Get last git tag") {
             steps {
                 script {
-                    def git_tag = sh(returnStdout: true, script: "git tag --list | tail -1").trim()
+                    def git_tag = sh(returnStdout: true, script: "git tag --points-at HEAD").trim()
                     echo "Git tag: $git_tag"
                     env.tag = git_tag
                 } 
