@@ -13,9 +13,6 @@ pipeline {
         version = 'v'
         TAG_NAME = "${env.GIT_TAG_NAME}"
     }
-    // agent {
-    //     label 'main' // Собирать только по этой ветке
-    // }
     agent any
     options {
         /* groovylint-disable-next-line DuplicateStringLiteral */
