@@ -1,7 +1,7 @@
 
 ## Сборка образа и отправка в registry:
-* [Jenkins file](./jenkinsfiles/myapp.Jenkinsfile)
-* [Pipeline log](./jenkinsfiles/pipeline_log--docker_build--#19.txt)
+* [Jenkins file](./jenkinsfiles/docker_build.Jenkinsfile)
+* [Pipeline log](./jenkinsfiles/pipeline-log_docker_buid#86.txt)
 * Github Web-hook:
     ![web-hook](./screenshots/docker_build/github-web-hook.png)
 * Jenkins CICD:\
